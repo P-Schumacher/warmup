@@ -7,7 +7,7 @@ setup(
     author="Pierre Schumacher, MPI-IS Tuebingen, Autonomous Learning",
     author_email="pierre.schumacher@tuebingen.mpg.de",
     license="MIT",
-    packages=["warmup"],
+    packages=find_packages(),
     include_package_data=True,
     package_data={
         "warmup": ["param_files/*.json", "xml_files/Geometry/*.stl"]
