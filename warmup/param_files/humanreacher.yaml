@@ -9,7 +9,7 @@ params_env:
   termination: 1
   termination_distance: 0.05
   render: 0,
-  gravity: [9.81, 0, 0]
-  eval_gravity: [9.81, 0, 0]
+  gravity: [0, 0, -9.81]
+  eval_gravity: [0, 0, -9.81]
   episode_length: 500
   ball_attached: False

@@ -98,18 +98,6 @@ class MuscleEnv(AbstractMuscleEnv):
     def set_attached_ball(self, ball_attached=False):
         self.ball_attached = ball_attached
 
-    def apply_muscle_settings(self):
-        """
-        Apply settings=[FL, FV, DYN] as [FL_active, FV, FL_passive, DYN]
-        in environment.
-        """
-        self.sim.data.userdata[: len(self.settings) + 1] = [
-            self.settings[0],
-            self.settings[1],
-            self.settings[0],
-            self.settings[2],
-        ]
-
     def set_muscle_control(self, actuator="mujoco", settings=[1, 1, 1]):
         """
         <settings> describes [Force_length, Force_velocity, activation_dynamics]
@@ -118,21 +106,7 @@ class MuscleEnv(AbstractMuscleEnv):
         The mujoco defaults ignore the <settings> attribute.
         """
         # Attention, mutable default argument, don't change!
-        self.settings = np.array(settings).copy()
-        if actuator == "mujoco":
-            pass
-
-        elif actuator == "user":
-            try:
-                from mujoco_py import cymj
-
-                cymj.set_muscle_control(self.sim.model, self.sim.data)
-            except Exception:
-                raise Exception(
-                    "User-defined muscle actuator <{args.muscle_morphology}> could not be loaded! Is the\
-                                custom mujoco-py branch\
-                                installed?"
-                )
+        pass
 
     def set_random_goals(self, random_goals=False):
         """Should the goals be randomly sampled."""
@@ -211,12 +185,12 @@ class MuscleEnv(AbstractMuscleEnv):
             ]
         )
 
-    def muscle_lengths(self):
+    def muscle_length(self):
         if not hasattr(self, "action_multiplier") or self.action_multiplier == 1:
             return self.data.actuator_length.copy()
         return np.repeat(self.data.actuator_length.copy(), self.action_multiplier)
 
-    def muscle_velocities(self):
+    def muscle_velocity(self):
         if not hasattr(self, "action_multiplier") or self.action_multiplier == 1:
             return np.clip(self.data.actuator_velocity, -100, 100).copy()
         return np.repeat(
@@ -231,7 +205,7 @@ class MuscleEnv(AbstractMuscleEnv):
             np.clip(self.data.act, -100, 100).copy(), self.action_multiplier
         )
 
-    def muscle_forces(self):
+    def muscle_force(self):
         if not hasattr(self, "action_multiplier") or self.action_multiplier == 1:
             return np.clip(self.data.actuator_force / 1000, -100, 100).copy()
         return np.repeat(

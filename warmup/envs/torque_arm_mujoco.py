@@ -18,7 +18,6 @@ class TorqueArmMuJoCo(MuscleArm):
         self.has_init = True
 
     def reset_model(self):
-        self.apply_muscle_settings()
         self.randomise_init_state()
         if self.random_goals:
             self.target = self.sample_rectangular_goal()

@@ -8,25 +8,24 @@ from gym.envs.mujoco import mujoco_env
 from .muscle_arm import MuscleArm
 
 
-class MuscleArmMuJoCo(MuscleArm):
+class HumanReacher(MuscleArm):
     def __init__(self):
-        self.model_type = "muscle_arm_mujoco"
+        self.model_type = "humanreacher"
         self.tracking_str = "endeffector"
-        self.nq = 2
-        self.ball_attached = False
+        self.nq = 24
         super(MuscleArm, self).__init__()
-        self.set_gravity([9.81, 0, 0])
+        self.set_gravity([0, 0, -9.81])
         self.has_init = True
 
     def reset_model(self):
         self.randomise_init_state()
         if self.random_goals:
             self.target = self.sample_rectangular_goal()
-        self.sim.data.qpos[-2:] = self.target[:2]
+        self.sim.data.qpos[-3:] = self.target[:3]
         return self._get_obs()
 
     def sample_rectangular_goal(self):
-        return np.random.uniform([-0.2, 0.5, 0.0], [0.15, 0.65, 0.0])
+        return np.random.uniform([0.35, -0.3, 0.75], [0.45, 0.0, 1.00])
 
     def sample_circular_goal(self):
         rho = np.random.uniform(-1.0, 0)
@@ -44,16 +43,8 @@ class MuscleArmMuJoCo(MuscleArm):
         self.viewer.cam.azimuth = 180
 
     @property
-    def xml_path(self):
-        if self.ball_attached:
-            return "xml_files/muscle_arm_mujoco_ball.xml"
-        else:
-            return "xml_files/arm26.xml"
-
-    def activate_ball(self):
-        self.ball_attached = 1
-        self.reinitialise(self.args)
-        self.model.opt.gravity[0] = 9.81
+    def xml_path(self):            
+        return "xml_files/humanreacher.xml"
 
     def reinitialise(self, args):
         """if we want to load from specific xml, not the creator"""
@@ -90,10 +81,3 @@ class MuscleArmMuJoCo(MuscleArm):
                 self.sim.data.get_site_xpos(self.tracking_str),
             ]
         )
-
-if __name__ == "__main__":
-    env = gym.make("muscle_arm_mujoco-v0")
-    env.reset()
-    for i in range(100):
-        env.step(env.action_space.sample())
-        env.render()
