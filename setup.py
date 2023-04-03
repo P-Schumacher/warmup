@@ -3,7 +3,7 @@ from setuptools import find_packages, setup
 setup(
     name="warmup",
     version="0.2.0",
-    install_requires=["gym==0.13.0, pyyaml"],
+    install_requires=["gym==0.13.0", "pyyaml"],
     author="Pierre Schumacher, MPI-IS Tuebingen, Autonomous Learning",
     author_email="pierre.schumacher@tuebingen.mpg.de",
     license="MIT",
