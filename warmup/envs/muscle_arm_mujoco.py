@@ -1,7 +1,6 @@
 import os
 
 import numpy as np
-from gym import spaces
 from gym import utils
 from gym.envs.mujoco import mujoco_env
 
@@ -45,10 +44,7 @@ class MuscleArmMuJoCo(MuscleArm):
 
     @property
     def xml_path(self):
-        if self.ball_attached:
-            return "xml_files/muscle_arm_mujoco_ball.xml"
-        else:
-            return "xml_files/arm26.xml"
+        return "xml_files/muscle_arm_mujoco.xml"
 
     def activate_ball(self):
         self.ball_attached = 1
@@ -90,10 +86,3 @@ class MuscleArmMuJoCo(MuscleArm):
                 self.sim.data.get_site_xpos(self.tracking_str),
             ]
         )
-
-if __name__ == "__main__":
-    env = gym.make("muscle_arm_mujoco-v0")
-    env.reset()
-    for i in range(100):
-        env.step(env.action_space.sample())
-        env.render()

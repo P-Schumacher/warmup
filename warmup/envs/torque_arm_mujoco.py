@@ -1,7 +1,6 @@
 import os
 
 import numpy as np
-from gym import spaces
 from gym import utils
 from gym.envs.mujoco import mujoco_env
 
@@ -57,7 +56,7 @@ class TorqueArmMuJoCo(MuscleArm):
     def reinitialise(self, args):
         """if we want to load from specific xml, not the creator"""
         self.need_reinit = 0
-        while True: 
+        while True:
             path = os.path.join(
                 os.path.dirname(os.path.dirname(__file__)),
                 self.xml_path,

@@ -1,15 +1,12 @@
 
 params_env:
-  frameskip: 2
-  muscle_morphology: "mujoco"
-  morph_settings: [1,1,1]
+  frameskip: 5
   target: [-0.35, 0.65, 0.0]
   random_goals: 1
   sparse_reward: 1
   termination: 1
-  termination_distance: 0.05
+  termination_distance: 0.04
   render: 0,
-  gravity: [0, 0, -9.81]
-  eval_gravity: [0, 0, -9.81]
-  episode_length: 500
-  ball_attached: False
+  gravity: [0, 0, -10.0]
+  eval_gravity: [0, 0, -10.0]
+  force_scale: 0.04

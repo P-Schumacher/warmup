@@ -1,6 +1,4 @@
 import numpy as np
-from gym import utils
-from gym.envs.mujoco import mujoco_env
 
 from .muscle_env import MuscleEnv
 
@@ -32,10 +30,12 @@ class MuscleArm(MuscleEnv):
         done = self._get_done(ee_pos)
         if done:
             reward += 10.0
-            print(f"{done=}")
-            print(f"{ee_pos=}")
-            print(f"{self.target=}")
-        return self._get_obs(), reward, done, {"tracking": ee_pos, "activity": act}
+        return (
+            self._get_obs(),
+            reward,
+            done,
+            {"tracking": ee_pos, "activity": act},
+        )
 
     def _get_reward(self, ee_pos, action):
         lamb = 1e-4  # 1e-4
@@ -48,21 +48,27 @@ class MuscleArm(MuscleEnv):
         if self.sparse_reward:
             return -1.0
         return (
-            -rew_weight * (d + log_weight * np.log(d + epsilon**2)) - activ_cost - 2
+            -rew_weight * (d + log_weight * np.log(d + epsilon**2))
+            - activ_cost
+            - 2
         )
 
     def _get_done(self, ee_pos):
         if not self.termination:
             return 0.0
         return [
-            1 if np.linalg.norm(self.target - ee_pos) < self.termination_distance else 0
+            1
+            if np.linalg.norm(self.target - ee_pos) < self.termination_distance
+            else 0
         ][0]
 
     def _get_extended_done(self, ee_pos):
         """Emit termination if endeffector is stationary at goal for several
         time steps. Not used atm."""
         cdt = [
-            1 if np.linalg.norm(self.target - ee_pos) < self.termination_distance else 0
+            1
+            if np.linalg.norm(self.target - ee_pos) < self.termination_distance
+            else 0
         ][0]
         if not cdt:
             self._done_steps = 0

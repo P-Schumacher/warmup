@@ -17,18 +17,15 @@
 
     <option timestep="0.005" iterations="50" solver="Newton" tolerance="1e-10"/>
 
-    <size njmax="50" nconmax="10" nstack="200" nuserdata="200" nuser_actuator="6"/>
+    <size njmax="50" nconmax="10" nstack="200"/>
 
     <visual>
         <rgba haze=".3 .3 .3 1"/>
-        <quality shadowsize="10000" offsamples="32" numslices="64" numquads="32"/>
     </visual>
 
-
-	<!--gainprm[0] and gainprm[1] are not used from here but are written inside the corresponding xml file.-->
     <default>
-        <joint type="hinge" pos="0 0 0" axis="0 0 1" limited="true" range="-120 120" damping="0.1"/>
-        <general gaintype="user" dyntype="user" biastype="user" ctrllimited="true" ctrlrange="0 1" gainprm="0 0 295 200 0.5 1.6 0.5 1.3 1.2" biasprm="0 0 295 200 0.5 1.6 0.5 1.3 1.2"/>
+        <joint type="hinge" pos="0 0 0" axis="0 0 1" limited="true" range="0 120" damping="0.1"/>
+        <muscle ctrllimited="true" ctrlrange="0 1"/>
     </default>
 
     <asset>
@@ -52,31 +49,81 @@
             <joint name="shoulder"/>
             <geom name="shoulder" type="cylinder" pos="0 0 0" size=".1 .05" rgba=".5 .1 .8 .5" mass="0" group="1"/>
 
+            <site name="s1" pos="0.15 0.06 0" size="0.02"/>
+            <site name="s2" pos="0.15 -0.06 0" size="0.02"/>
+            <site name="s3" pos="0.4 0.06 0" size="0.02"/>
+            <site name="s4" pos="0.4 -0.06 0" size="0.02"/>
+            <site name="s5" pos="0.25 0.1 0" size="0.02"/>
+            <site name="s6" pos="0.25 -0.1 0" size="0.02"/>
+            <site name="x1" pos="0.5 -0.15 0" size="0.02" rgba="0 .7 0 1" group="1"/>
 
             <body pos="0.5 0 0">
-                <geom name="forearm" type="capsule" size="0.035" fromto="0 0 0  0.5 0 0" rgba=".5 .1 .1 1" />
-                <site name="endeffector" size="0.02" pos="0.5 0 0"/>
+                <geom name="forearm" type="capsule" size="0.035" fromto="0 0 0  0.5 0 0" rgba=".5 .1 .1 1"/>
+                  <site name="endeffector" size="0.02" pos="0.5 0 0"/>
                 <joint name="elbow"/>
-		<geom name="elbow" type="cylinder" pos="0 0 0" size=".08 .05" rgba=".5 .1 .8 .5" mass="0" group="1"/>
-		    <body name="end_mass" pos="0.5 0 0">
-		    <joint name="end_mass_x"/>
-		    <joint axis="0 1 0" name="end_mass_y"/>
-		    <geom conaffinity="0" contype="0" name="end_mass_geom" pos="0 0 0" rgba="0.9 0.2 0.2 1" size=".002" type="sphere" />
-		    </body>
+                <geom name="elbow" type="cylinder" pos="0 0 0" size=".08 .05" rgba=".5 .1 .8 .5" mass="0" group="1"/>
+
+                <site name="s7" pos="0.11 0.05 0" size="0.02"/>
+                <site name="s8" pos="0.11 -0.05 0" size="0.02"/>
             </body>
         </body>
 	    <body name="target" pos="0 0 0">
-    <joint armature="0" axis="1 0 0" damping="100000" frictionloss="100000" limited="true" name="target_x" pos="0
-    0 0" range="-1 1" ref="0" stiffness="0" type="slide"/>
-    <joint armature="0" axis="0 1 0" damping="100000" frictionloss="100000" limited="true" name="target_y" pos="0
-    0 0" range="-1 1" ref="0" stiffness="0" type="slide"/>
-    <geom conaffinity="0" contype="0" name="target" pos="0 0 0" rgba="0.9 0.2 0.2 1" size=".02" type="sphere"/>
-            </body>
-
+            <joint armature="0" axis="1 0 0" damping="100000" frictionloss="100000" limited="true" name="target_x" pos="0
+            0 0" range="-1 1" ref="0" stiffness="0" type="slide"/>
+            <joint armature="0" axis="0 1 0" damping="100000" frictionloss="100000" limited="true" name="target_y" pos="0
+            0 0" range="-1 1" ref="0" stiffness="0" type="slide"/>
+            <geom conaffinity="0" contype="0" name="target" pos="0 0 0" rgba="0.9 0.2 0.2 1" size=".02" type="sphere"/>
+    </body>
     </worldbody>
 
+    <tendon>
+        <spatial name="SF" width="0.01">
+            <site site="s0"/>
+            <geom geom="shoulder"/>
+            <site site="s1"/>
+        </spatial>
+
+        <spatial name="SE" width="0.01">
+            <site site="s0"/>
+            <geom geom="shoulder" sidesite="x0"/>
+            <site site="s2"/>
+        </spatial>
+
+        <spatial name="EF" width="0.01">
+            <site site="s3"/>
+            <geom geom="elbow"/>
+            <site site="s7"/>
+        </spatial>
+
+        <spatial name="EE" width="0.01">
+            <site site="s4"/>
+            <geom geom="elbow" sidesite="x1"/>
+            <site site="s8"/>
+        </spatial>
+
+        <spatial name="BF" width="0.009" rgba=".4 .6 .4 1">
+            <site site="s0"/>
+            <geom geom="shoulder"/>
+            <site site="s5"/>
+            <geom geom="elbow"/>
+            <site site="s7"/>
+        </spatial>
+
+        <spatial name="BE" width="0.009" rgba=".4 .6 .4 1">
+            <site site="s0"/>
+            <geom geom="shoulder" sidesite="x0"/>
+            <site site="s6"/>
+            <geom geom="elbow" sidesite="x1"/>
+            <site site="s8"/>
+        </spatial>
+    </tendon>
+
     <actuator>
-        <general name="shoulder" joint="shoulder"/>
-        <general name="elbow" joint="elbow"/>
+        <muscle name="SF" tendon="SF"/>
+        <muscle name="SE" tendon="SE"/>
+        <muscle name="EF" tendon="EF"/>
+        <muscle name="EE" tendon="EE"/>
+        <muscle name="BF" tendon="BF"/>
+        <muscle name="BE" tendon="BE"/>
     </actuator>
 </mujoco>

@@ -1,7 +1,6 @@
 import os
 
 import numpy as np
-from gym import spaces
 from gym import utils
 from gym.envs.mujoco import mujoco_env
 
@@ -18,7 +17,7 @@ class HumanReacher(MuscleArm):
         self.has_init = True
 
     def reset_model(self):
-        self.randomise_init_state()
+        self.randomise_init_state(diff=0.03)
         if self.random_goals:
             self.target = self.sample_rectangular_goal()
         self.sim.data.qpos[-3:] = self.target[:3]
@@ -43,7 +42,7 @@ class HumanReacher(MuscleArm):
         self.viewer.cam.azimuth = 180
 
     @property
-    def xml_path(self):            
+    def xml_path(self):
         return "xml_files/humanreacher.xml"
 
     def reinitialise(self, args):

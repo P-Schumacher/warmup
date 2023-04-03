@@ -1,10 +1,7 @@
-import yaml
-import os
-import time
 from types import SimpleNamespace
 
 import numpy as np
-
+import yaml
 
 # TODO remove redundancy from loaders and put into unified dicts,
 # you then only load those ones and do the rest model agnostic
@@ -31,10 +28,13 @@ def load_default_params(path=None):
 
 def save_metrics(params, args, metrics):
     paths = [
-        f"{params.model_dir}/{args.folder_name}/{key}.npy" for key in metrics.keys()
+        f"{params.model_dir}/{args.folder_name}/{key}.npy"
+        for key in metrics.keys()
     ]
     for key, path in zip(metrics.keys(), paths):
-        np.save(f"{params.model_dir}/{args.folder_name}/{key}.npy", metrics[key])
+        np.save(
+            f"{params.model_dir}/{args.folder_name}/{key}.npy", metrics[key]
+        )
     print("Saving metrics")
 
 

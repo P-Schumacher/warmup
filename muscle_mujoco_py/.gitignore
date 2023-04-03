@@ -1,6 +1,0 @@
-
-*__pycache__*
-*generated/*
-*egg*
-mujoco_py/*.c
-
